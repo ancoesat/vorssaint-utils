@@ -113,7 +113,9 @@ struct ShortcutsSettings: View {
     @ViewBuilder
     private func featureRows(_ feature: AppFeature, in group: FeatureGroup) -> some View {
         let roles = availableRoles.filter { $0.feature == feature && $0.group == group }
-        let count = feature == .windowLayout ? WindowLayoutAction.shortcutActions.count : roles.count
+        let count = feature == .windowLayout
+            ? WindowLayoutAction.shortcutActions.count + roles.count
+            : roles.count
         if count > 1 {
             disclosureHeader(
                 title: featureTitle(feature, roles: roles),
@@ -133,6 +135,10 @@ struct ShortcutsSettings: View {
                             text: text
                         )
                         .disclosureIndent()
+                    }
+                    ForEach(roles) { role in
+                        roleRow(role, showsFeatureContext: false)
+                            .disclosureIndent()
                     }
                 } else {
                     if feature == .brightness, roles.allSatisfy(\.isKeyboardBrightness) {
@@ -231,9 +237,10 @@ struct ShortcutsSettings: View {
 
     private func featureHasActiveShortcut(_ feature: AppFeature,
                                           roles: [GlobalShortcutRole]) -> Bool {
-        if feature == .windowLayout {
-            return UserDefaults.standard.bool(forKey: DefaultsKey.windowLayoutShortcutsEnabled)
-                && WindowLayoutAction.shortcutActions.contains { $0.savedShortcut != nil }
+        if feature == .windowLayout,
+           UserDefaults.standard.bool(forKey: DefaultsKey.windowLayoutShortcutsEnabled),
+           WindowLayoutAction.shortcutActions.contains(where: { $0.savedShortcut != nil }) {
+            return true
         }
         return roles.contains { role in
             role.requiredEnableKeys.allSatisfy { UserDefaults.standard.bool(forKey: $0) }

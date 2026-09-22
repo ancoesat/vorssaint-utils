@@ -918,7 +918,17 @@ enum WindowLayoutGeometry {
                                      frames: [CGRect],
                                      movingForward: Bool) -> Int? {
         guard frames.count > 1, frames.indices.contains(currentIndex) else { return nil }
-        let ordered = frames.indices.sorted { lhsIndex, rhsIndex in
+        let ordered = displayOrder(frames: frames)
+        guard let position = ordered.firstIndex(of: currentIndex) else { return nil }
+        let destination = (position + (movingForward ? 1 : ordered.count - 1)) % ordered.count
+        return ordered[destination]
+    }
+
+    /// Indices of `frames` left to right, the order Next display cycles
+    /// through. The pointer shortcuts number displays in this same order, so
+    /// display 1 is always the one Next display treats as first.
+    static func displayOrder(frames: [CGRect]) -> [Int] {
+        frames.indices.sorted { lhsIndex, rhsIndex in
             let lhs = frames[lhsIndex]
             let rhs = frames[rhsIndex]
             if lhs.minX != rhs.minX { return lhs.minX < rhs.minX }
@@ -927,9 +937,6 @@ enum WindowLayoutGeometry {
             if lhs.height != rhs.height { return lhs.height < rhs.height }
             return lhsIndex < rhsIndex
         }
-        guard let position = ordered.firstIndex(of: currentIndex) else { return nil }
-        let destination = (position + (movingForward ? 1 : ordered.count - 1)) % ordered.count
-        return ordered[destination]
     }
 
     private static func area(_ rect: CGRect) -> CGFloat {
