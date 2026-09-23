@@ -611,10 +611,6 @@ enum WindowLayoutFeatureTests {
                                                              frames: verticalDisplays,
                                                              movingForward: true) == 1,
                "window layout orders stacked displays by their vertical origin")
-        suite.expect(WindowLayoutGeometry.displayOrder(frames: horizontalDisplays) == [1, 0, 2]
-                && WindowLayoutGeometry.displayOrder(frames: verticalDisplays) == [2, 0, 1]
-                && WindowLayoutGeometry.displayOrder(frames: []).isEmpty,
-               "pointer display numbers follow the Next display order, left to right")
         suite.expect(GlobalShortcutRole.pointerNextDisplay.storageKey == DefaultsKey.pointerDisplayShortcut
                 && GlobalShortcutRole.pointerNextDisplay.defaultShortcut == .pointerNextDisplayDefault
                 && GlobalShortcutRole.pointerNextDisplay.requiredEnableKeys == [DefaultsKey.pointerDisplayEnabled]

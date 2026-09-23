@@ -176,9 +176,10 @@ struct GlobalShortcut: Equatable, Hashable {
                                                                modifiers: [.control, .option, .command])
     static let windowDirectionalDefault = GlobalShortcut(keyCode: Int64(kVK_Space),
                                                          modifiers: [.control, .option])
-    // D for display. The same modifiers with a digit pick a display directly.
-    static let pointerNextDisplayDefault = GlobalShortcut(keyCode: Int64(kVK_ANSI_D),
-                                                          modifiers: [.control, .command])
+    // The key beside the modifiers, so one left hand presses it, on the
+    // free control-option-command layer.
+    static let pointerNextDisplayDefault = GlobalShortcut(keyCode: Int64(kVK_ANSI_Z),
+                                                          modifiers: [.control, .option, .command])
     // Quick tools. Paste plain follows the universal "Paste and Match Style"
     // combination; the others use the free ⌃⌥⌘ letters.
     static let pastePlainDefault = GlobalShortcut(keyCode: Int64(kVK_ANSI_V),
