@@ -31,8 +31,9 @@ final class PointerDisplayService: ObservableObject {
 
     func moveToNextDisplay() {
         let screens = NSScreen.screens
-        guard let current = NSScreen.withMouse,
-              let currentIndex = screens.firstIndex(where: { $0.displayID == current.displayID }),
+        // NSMouseInRect, like the brightness shortcuts: frame.contains misses
+        // a pointer resting on a display's top edge.
+        guard let currentIndex = screens.firstIndex(where: { NSMouseInRect(NSEvent.mouseLocation, $0.frame, false) }),
               let target = WindowLayoutGeometry.adjacentDisplayIndex(currentIndex: currentIndex,
                                                                       frames: screens.map(\.frame),
                                                                       movingForward: true)
