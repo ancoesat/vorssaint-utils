@@ -137,7 +137,7 @@ struct ShortcutsSettings: View {
                         .disclosureIndent()
                     }
                     ForEach(roles) { role in
-                        roleRow(role, showsFeatureContext: false)
+                        roleRow(role, showsFeatureContext: false, reservesClearButtonSpace: true)
                             .disclosureIndent()
                     }
                 } else {
@@ -196,7 +196,8 @@ struct ShortcutsSettings: View {
     }
 
     private func roleRow(_ role: GlobalShortcutRole,
-                         showsFeatureContext: Bool = true) -> some View {
+                         showsFeatureContext: Bool = true,
+                         reservesClearButtonSpace: Bool = false) -> some View {
         let title = role.title(l10n.s)
         let featureTitle = role.feature.hubTitle(l10n.s, hub: hub)
         let active = role.requiredEnableKeys.allSatisfy {
@@ -213,6 +214,7 @@ struct ShortcutsSettings: View {
             showsSuperKeyAlternative: superKey.isRunning,
             superKeyModifiers: superKey.modifiers,
             includeInactiveConflicts: true,
+            reservesClearButtonSpace: reservesClearButtonSpace,
             additionalConflict: { shortcut in
                 guard AppFeature.windowLayout.isAvailable else { return nil }
                 return WindowLayoutService.shared.shortcutConflictTitle(shortcut, excluding: nil)
